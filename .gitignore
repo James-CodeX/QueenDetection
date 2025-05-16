@@ -1,0 +1,26 @@
+# Python cache files
+server/**/__pycache__/
+server/**/*.pyc
+server/**/*.pyo
+server/**/*.pyd
+
+# Virtual environment folders
+server/venv/
+server/env/
+
+# Dataset folder (ignore all data inside)
+dataset/
+
+# Model files (if you want to ignore, else remove this line)
+# model/
+
+# Jupyter Notebook checkpoints
+server/**/.ipynb_checkpoints/
+
+# Logs and temp files
+*.log
+*.tmp
+
+# OS generated files
+.DS_Store
+Thumbs.db
