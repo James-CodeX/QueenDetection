@@ -13,7 +13,7 @@ dataset/
 
 # Model files (if you want to ignore, else remove this line)
 # model/
-server/Notebook/
+server/notebooks/
 
 # Jupyter Notebook checkpoints
 server/**/.ipynb_checkpoints/
