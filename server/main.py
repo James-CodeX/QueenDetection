@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
+from api.routes import router as api_router
 
 app = FastAPI(title="Queen Bee Detection API")
 
@@ -13,7 +14,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.post("/predict")
+# Include the API router
+app.include_router(api_router, prefix="/api")
 
 @app.get("/")
 async def root():
