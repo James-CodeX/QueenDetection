@@ -3,6 +3,7 @@ server/**/__pycache__/
 server/**/*.pyc
 server/**/*.pyo
 server/**/*.pyd
+client/node_modules
 
 # Virtual environment folders
 server/venv/
@@ -13,7 +14,6 @@ dataset/
 
 # Model files (if you want to ignore, else remove this line)
 # model/
-server/notebooks/
 
 # Jupyter Notebook checkpoints
 server/**/.ipynb_checkpoints/
