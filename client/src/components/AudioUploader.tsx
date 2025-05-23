@@ -45,6 +45,12 @@ const AudioUploader = ({ onFileUpload }: AudioUploaderProps) => {
   };
 
   const validateAndSetFile = (file: File) => {
+    const maxSize = 5 * 1024 * 1024;
+    if (file.size > maxSize) {
+      toast.error("File size must be less than 5MB");
+      return;
+    }
+
     // Check if file is .wav format
     if (file.type === "audio/wav" || file.name.endsWith(".wav")) {
       setSelectedFile(file);
@@ -81,8 +87,8 @@ const AudioUploader = ({ onFileUpload }: AudioUploaderProps) => {
       }
 
       const result = await response.json();
-      const isQueenPresent = result.prediction === "Queen Bee is Present";
       const confidence = parseFloat(result.confidence) / 100;
+      const isQueenPresent = confidence >= 0.75 && result.prediction === "Queen Bee is Present";
 
       // Store the result in localStorage for the results page
       localStorage.setItem(
