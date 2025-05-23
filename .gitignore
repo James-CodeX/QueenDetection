@@ -5,9 +5,12 @@ server/**/*.pyo
 server/**/*.pyd
 client/node_modules
 
+#dotenv files
+client/.env
+server/env
+
 # Virtual environment folders
 server/venv/
-server/env/
 
 # Dataset folder (ignore all data inside)
 dataset/
