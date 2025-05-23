@@ -11,10 +11,10 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
-      external: ['@tanstack/react-query'],
+      external: [],
     },
   },
   optimizeDeps: {
-    include: ['@tanstack/react-query'],
+    include: [],
   },
 });
