@@ -11,10 +11,10 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
-      external: ['@tanstack/react-query', '@radix-ui/react-tooltip', 'class-variance-authority'],
+      external: ['@tanstack/react-query'],
     },
   },
   optimizeDeps: {
-    include: ['@tanstack/react-query', '@radix-ui/react-tooltip', 'class-variance-authority'],
+    include: ['@tanstack/react-query'],
   },
 });
