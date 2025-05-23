@@ -9,4 +9,12 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    rollupOptions: {
+      external: ['@tanstack/react-query', '@radix-ui/react-tooltip', 'class-variance-authority'],
+    },
+  },
+  optimizeDeps: {
+    include: ['@tanstack/react-query', '@radix-ui/react-tooltip', 'class-variance-authority'],
+  },
 });

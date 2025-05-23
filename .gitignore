@@ -4,7 +4,7 @@ server/**/*.pyc
 server/**/*.pyo
 server/**/*.pyd
 client/node_modules
-
+client/dist
 #dotenv files
 client/.env
 server/env
