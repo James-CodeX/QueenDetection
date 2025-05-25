@@ -1,12 +1,81 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Menu, X, User, LogOut, Settings, History, ChevronRight } from "lucide-react";
+import AuthDialog from "./AuthDialog";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
+import { logOut } from "@/lib/firebase";
+import { toast } from "react-hot-toast";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const { user } = useAuth();
+  const location = useLocation();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location]);
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isMobileMenuOpen]);
+
+  const handleLogout = async () => {
+    try {
+      await logOut();
+      toast.success("Successfully logged out!");
+      setIsMobileMenuOpen(false);
+    } catch (error) {
+      toast.error("Failed to log out. Please try again.");
+    }
+  };
+
+  const isActive = (path: string) => {
+    return location.pathname === path;
+  };
+
+  const navLinks = [
+    { path: "/", label: "Home" },
+    { path: "/results", label: "Results" },
+  ];
 
   return (
-    <header className="w-full py-4 px-6 md:px-10 bg-white border-b border-honey/20 fixed top-0 left-0 z-50">
+    <header
+      className={`w-full py-4 px-6 md:px-10 fixed top-0 left-0 z-50 transition-all duration-200 ${
+        isScrolled
+          ? "bg-white/95 backdrop-blur-sm shadow-sm"
+          : "bg-white border-b border-honey/20"
+      }`}
+    >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <Link to="/" className="flex items-center space-x-2">
           <div className="w-11 h-11 rounded-full bg-honey flex items-center justify-center">
@@ -19,50 +88,188 @@ const Navigation = () => {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
-          <Link
-            to="/"
-            className="text-hive hover:text-honey font-medium transition-colors"
-          >
-            Home
-          </Link>
-          <Link
-            to="/results"
-            className="text-hive hover:text-honey font-medium transition-colors"
-          >
-            Results
-          </Link>
+          {navLinks.map((link) => (
+            <Link
+              key={link.path}
+              to={link.path}
+              className={`text-hive hover:text-honey font-medium transition-colors ${
+                isActive(link.path) ? "text-honey" : ""
+              }`}
+            >
+              {link.label}
+            </Link>
+          ))}
+          <div className="flex items-center space-x-4">
+            {user ? (
+              <div className="flex items-center space-x-3">
+                <span className="text-hive font-medium">
+                  {user.email?.split('@')[0].charAt(0).toUpperCase() + user.email?.split('@')[0].slice(1)}
+                </span>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="relative h-10 w-10 rounded-full"
+                    >
+                      <Avatar className="h-10 w-10">
+                        <AvatarFallback className="bg-honey/20 text-honey">
+                          {user.email?.[0].toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56" align="end">
+                    <DropdownMenuLabel>
+                      <div className="flex flex-col space-y-1">
+                        <p className="text-sm font-medium leading-none">
+                          {user.email?.split('@')[0].charAt(0).toUpperCase() + user.email?.split('@')[0].slice(1)}
+                        </p>
+                        <p className="text-xs leading-none text-muted-foreground">
+                          {user.email}
+                        </p>
+                      </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link to="/results" className="cursor-pointer">
+                        <History className="mr-2 h-4 w-4" />
+                        <span>Analysis History</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/settings" className="cursor-pointer">
+                        <Settings className="mr-2 h-4 w-4" />
+                        <span>Settings</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      className="text-red-600 focus:text-red-600 cursor-pointer"
+                      onClick={handleLogout}
+                    >
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Log out</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            ) : (
+              <AuthDialog>
+                <Button
+                  variant="ghost"
+                  className="flex items-center space-x-2 text-hive hover:text-honey"
+                >
+                  <User size={16} />
+                  <span>Sign In</span>
+                </Button>
+              </AuthDialog>
+            )}
+          </div>
         </nav>
 
         {/* Mobile Menu Button */}
         <button
           className="md:hidden p-2 text-hive hover:text-honey transition-colors"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          aria-label="Toggle menu"
         >
           {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
 
       {/* Mobile Navigation Menu */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 w-full bg-white border-b border-honey/20 shadow-lg">
-          <nav className="flex flex-col py-4">
-            <Link
-              to="/"
-              className="px-6 py-3 text-hive hover:text-honey hover:bg-honey/5 font-medium transition-colors"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Home
-            </Link>
-            <Link
-              to="/results"
-              className="px-6 py-3 text-hive hover:text-honey hover:bg-honey/5 font-medium transition-colors"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Results
-            </Link>
-          </nav>
-        </div>
-      )}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.2 }}
+            className="md:hidden fixed inset-0 top-[73px] bg-white z-40"
+          >
+            <div className="h-full overflow-y-auto">
+              <nav className="flex flex-col py-4">
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.path}
+                    to={link.path}
+                    className={`px-6 py-4 text-hive hover:text-honey hover:bg-honey/5 font-medium transition-colors flex items-center justify-between ${
+                      isActive(link.path) ? "text-honey bg-honey/5" : ""
+                    }`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <span>{link.label}</span>
+                    <ChevronRight size={16} className="text-honey/50" />
+                  </Link>
+                ))}
+                <div className="px-6 py-4 border-t border-honey/20">
+                  {user ? (
+                    <div className="space-y-4">
+                      <div className="flex items-center space-x-3">
+                        <Avatar className="h-12 w-12">
+                          <AvatarFallback className="bg-honey/20 text-honey text-lg">
+                            {user.email?.[0].toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="text-base font-medium text-hive">
+                            {user.email?.split('@')[0].charAt(0).toUpperCase() + user.email?.split('@')[0].slice(1)}
+                          </p>
+                          <p className="text-sm text-hive-light">{user.email}</p>
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Link
+                          to="/results"
+                          className="flex items-center justify-between py-3 px-4 rounded-lg text-hive hover:text-honey hover:bg-honey/5 transition-colors"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          <div className="flex items-center space-x-3">
+                            <History size={20} />
+                            <span>Analysis History</span>
+                          </div>
+                          <ChevronRight size={16} className="text-honey/50" />
+                        </Link>
+                        <Link
+                          to="/settings"
+                          className="flex items-center justify-between py-3 px-4 rounded-lg text-hive hover:text-honey hover:bg-honey/5 transition-colors"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          <div className="flex items-center space-x-3">
+                            <Settings size={20} />
+                            <span>Settings</span>
+                          </div>
+                          <ChevronRight size={16} className="text-honey/50" />
+                        </Link>
+                        <button
+                          onClick={handleLogout}
+                          className="w-full flex items-center justify-between py-3 px-4 rounded-lg text-red-600 hover:text-red-700 hover:bg-red-50 transition-colors"
+                        >
+                          <div className="flex items-center space-x-3">
+                            <LogOut size={20} />
+                            <span>Log out</span>
+                          </div>
+                          <ChevronRight size={16} className="text-red-400" />
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <AuthDialog>
+                      <Button
+                        variant="outline"
+                        className="w-full flex items-center justify-center space-x-2 py-6"
+                      >
+                        <User size={20} />
+                        <span>Sign In</span>
+                      </Button>
+                    </AuthDialog>
+                  )}
+                </div>
+              </nav>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 };
