@@ -9,11 +9,13 @@ client/dist
 client/.env
 server/env
 
+.vscode/
 # Virtual environment folders
 server/venv/
 
 # Dataset folder (ignore all data inside)
 dataset/
+chunks/
 
 # Model files (if you want to ignore, else remove this line)
 # model/
