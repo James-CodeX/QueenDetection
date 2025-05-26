@@ -1,6 +1,14 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, User, LogOut, Settings, History, ChevronRight } from "lucide-react";
+import {
+  Menu,
+  X,
+  User,
+  LogOut,
+  Settings,
+  History,
+  ChevronRight,
+} from "lucide-react";
 import AuthDialog from "./AuthDialog";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
@@ -63,9 +71,7 @@ const Navigation = () => {
     return location.pathname === path;
   };
 
-  const navLinks = [
-    { path: "/", label: "Home" },
-  ];
+  const navLinks = [{ path: "/", label: "Home" }];
 
   const sectionLinks = [
     { id: "features-section", label: "Features" },
@@ -82,7 +88,7 @@ const Navigation = () => {
 
       window.scrollTo({
         top: offsetPosition,
-        behavior: "smooth"
+        behavior: "smooth",
       });
       setIsMobileMenuOpen(false);
     }
@@ -97,8 +103,8 @@ const Navigation = () => {
       }`}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        <Link 
-          to="/" 
+        <Link
+          to="/"
           className="flex items-center space-x-2"
           onClick={(e) => {
             if (location.pathname === "/") {
@@ -134,20 +140,22 @@ const Navigation = () => {
               {link.label}
             </Link>
           ))}
-          {location.pathname === "/" && sectionLinks.map((link) => (
-            <button
-              key={link.id}
-              onClick={() => scrollToSection(link.id)}
-              className="text-hive hover:text-honey font-medium transition-colors"
-            >
-              {link.label}
-            </button>
-          ))}
+          {location.pathname === "/" &&
+            sectionLinks.map((link) => (
+              <button
+                key={link.id}
+                onClick={() => scrollToSection(link.id)}
+                className="text-hive hover:text-honey font-medium transition-colors"
+              >
+                {link.label}
+              </button>
+            ))}
           <div className="flex items-center space-x-4">
             {user ? (
               <div className="flex items-center space-x-3">
                 <span className="text-hive font-medium">
-                  {user.email?.split('@')[0].charAt(0).toUpperCase() + user.email?.split('@')[0].slice(1)}
+                  {user.email?.split("@")[0].charAt(0).toUpperCase() +
+                    user.email?.split("@")[0].slice(1)}
                 </span>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -166,26 +174,14 @@ const Navigation = () => {
                     <DropdownMenuLabel>
                       <div className="flex flex-col space-y-1">
                         <p className="text-sm font-medium leading-none">
-                          {user.email?.split('@')[0].charAt(0).toUpperCase() + user.email?.split('@')[0].slice(1)}
+                          {user.email?.split("@")[0].charAt(0).toUpperCase() +
+                            user.email?.split("@")[0].slice(1)}
                         </p>
                         <p className="text-xs leading-none text-muted-foreground">
                           {user.email}
                         </p>
                       </div>
                     </DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
-                      <Link to="/results" className="cursor-pointer">
-                        <History className="mr-2 h-4 w-4" />
-                        <span>Analysis History</span>
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link to="/settings" className="cursor-pointer">
-                        <Settings className="mr-2 h-4 w-4" />
-                        <span>Settings</span>
-                      </Link>
-                    </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       className="text-red-600 focus:text-red-600 cursor-pointer"
@@ -285,34 +281,15 @@ const Navigation = () => {
                         </Avatar>
                         <div>
                           <p className="text-base font-medium text-hive">
-                            {user.email?.split('@')[0].charAt(0).toUpperCase() + user.email?.split('@')[0].slice(1)}
+                            {user.email?.split("@")[0].charAt(0).toUpperCase() +
+                              user.email?.split("@")[0].slice(1)}
                           </p>
-                          <p className="text-sm text-hive-light">{user.email}</p>
+                          <p className="text-sm text-hive-light">
+                            {user.email}
+                          </p>
                         </div>
                       </div>
                       <div className="space-y-2">
-                        <Link
-                          to="/results"
-                          className="flex items-center justify-between py-3 px-4 rounded-lg text-hive hover:text-honey hover:bg-honey/5 transition-colors"
-                          onClick={() => setIsMobileMenuOpen(false)}
-                        >
-                          <div className="flex items-center space-x-3">
-                            <History size={20} />
-                            <span>Analysis History</span>
-                          </div>
-                          <ChevronRight size={16} className="text-honey/50" />
-                        </Link>
-                        <Link
-                          to="/settings"
-                          className="flex items-center justify-between py-3 px-4 rounded-lg text-hive hover:text-honey hover:bg-honey/5 transition-colors"
-                          onClick={() => setIsMobileMenuOpen(false)}
-                        >
-                          <div className="flex items-center space-x-3">
-                            <Settings size={20} />
-                            <span>Settings</span>
-                          </div>
-                          <ChevronRight size={16} className="text-honey/50" />
-                        </Link>
                         <button
                           onClick={handleLogout}
                           className="w-full flex items-center justify-between py-3 px-4 rounded-lg text-red-600 hover:text-red-700 hover:bg-red-50 transition-colors"
@@ -329,7 +306,7 @@ const Navigation = () => {
                     <AuthDialog>
                       <Button
                         variant="outline"
-                        className="w-full flex items-center justify-center space-x-2 py-6 bg-honey/5 hover:bg-honey/10 text-hive border-honey/20"
+                        className="w-full flex items-center justify-center space-x-2 py-6 bg-honey hover:bg-honey/10 text-hive font-bold border-honey/20"
                       >
                         <User size={20} />
                         <span>Sign In</span>
