@@ -18,7 +18,7 @@ dataset/
 chunks/
 
 # Model files (if you want to ignore, else remove this line)
-# model/
+server/model/queenbee_final_model.h5
 
 # Jupyter Notebook checkpoints
 server/**/.ipynb_checkpoints/
