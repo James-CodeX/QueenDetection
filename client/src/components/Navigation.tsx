@@ -65,8 +65,28 @@ const Navigation = () => {
 
   const navLinks = [
     { path: "/", label: "Home" },
-    { path: "/results", label: "Results" },
   ];
+
+  const sectionLinks = [
+    { id: "features-section", label: "Features" },
+    { id: "ai-models-section", label: "AI Models" },
+    { id: "upload-section", label: "Upload" },
+  ];
+
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      const headerOffset = 73;
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.scrollY - headerOffset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth"
+      });
+      setIsMobileMenuOpen(false);
+    }
+  };
 
   return (
     <header
@@ -77,7 +97,16 @@ const Navigation = () => {
       }`}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        <Link to="/" className="flex items-center space-x-2">
+        <Link 
+          to="/" 
+          className="flex items-center space-x-2"
+          onClick={(e) => {
+            if (location.pathname === "/") {
+              e.preventDefault();
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+          }}
+        >
           <div className="w-11 h-11 rounded-full bg-honey flex items-center justify-center">
             <img src="/bee.png" alt="BuzzDetect Logo" className="w-8 h-8" />
           </div>
@@ -92,12 +121,27 @@ const Navigation = () => {
             <Link
               key={link.path}
               to={link.path}
+              onClick={(e) => {
+                if (link.path === "/" && location.pathname === "/") {
+                  e.preventDefault();
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }
+              }}
               className={`text-hive hover:text-honey font-medium transition-colors ${
                 isActive(link.path) ? "text-honey" : ""
               }`}
             >
               {link.label}
             </Link>
+          ))}
+          {location.pathname === "/" && sectionLinks.map((link) => (
+            <button
+              key={link.id}
+              onClick={() => scrollToSection(link.id)}
+              className="text-hive hover:text-honey font-medium transition-colors"
+            >
+              {link.label}
+            </button>
           ))}
           <div className="flex items-center space-x-4">
             {user ? (
@@ -185,27 +229,55 @@ const Navigation = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.2 }}
-            className="md:hidden fixed inset-0 top-[73px] bg-white z-40"
+            className="md:hidden fixed inset-0 top-[73px] bg-white z-50 overflow-y-auto"
+            style={{ height: "calc(100vh - 73px)" }}
           >
-            <div className="h-full overflow-y-auto">
+            <div className="min-h-full flex flex-col">
               <nav className="flex flex-col py-4">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.path}
-                    to={link.path}
-                    className={`px-6 py-4 text-hive hover:text-honey hover:bg-honey/5 font-medium transition-colors flex items-center justify-between ${
-                      isActive(link.path) ? "text-honey bg-honey/5" : ""
-                    }`}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    <span>{link.label}</span>
-                    <ChevronRight size={16} className="text-honey/50" />
-                  </Link>
-                ))}
-                <div className="px-6 py-4 border-t border-honey/20">
+                {/* Main Navigation */}
+                <div className="px-4 mb-2">
+                  <h3 className="text-xs font-semibold text-hive/60 uppercase tracking-wider mb-2">
+                    Navigation
+                  </h3>
+                  {navLinks.map((link) => (
+                    <Link
+                      key={link.path}
+                      to={link.path}
+                      className={`px-4 py-3 text-hive hover:text-honey hover:bg-honey/5 font-medium transition-colors flex items-center justify-between rounded-lg ${
+                        isActive(link.path) ? "text-honey bg-honey/5" : ""
+                      }`}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <span>{link.label}</span>
+                      <ChevronRight size={16} className="text-honey/50" />
+                    </Link>
+                  ))}
+                </div>
+
+                {/* Section Links */}
+                {location.pathname === "/" && (
+                  <div className="px-4 mb-2">
+                    <h3 className="text-xs font-semibold text-hive/60 uppercase tracking-wider mb-2">
+                      Sections
+                    </h3>
+                    {sectionLinks.map((link) => (
+                      <button
+                        key={link.id}
+                        onClick={() => scrollToSection(link.id)}
+                        className="w-full px-4 py-3 text-hive hover:text-honey hover:bg-honey/5 font-medium transition-colors flex items-center justify-between rounded-lg"
+                      >
+                        <span>{link.label}</span>
+                        <ChevronRight size={16} className="text-honey/50" />
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {/* User Section */}
+                <div className="px-4 mt-4 pt-4 border-t border-honey/20">
                   {user ? (
                     <div className="space-y-4">
-                      <div className="flex items-center space-x-3">
+                      <div className="flex items-center space-x-3 p-4 bg-honey/5 rounded-lg">
                         <Avatar className="h-12 w-12">
                           <AvatarFallback className="bg-honey/20 text-honey text-lg">
                             {user.email?.[0].toUpperCase()}
@@ -257,7 +329,7 @@ const Navigation = () => {
                     <AuthDialog>
                       <Button
                         variant="outline"
-                        className="w-full flex items-center justify-center space-x-2 py-6"
+                        className="w-full flex items-center justify-center space-x-2 py-6 bg-honey/5 hover:bg-honey/10 text-hive border-honey/20"
                       >
                         <User size={20} />
                         <span>Sign In</span>

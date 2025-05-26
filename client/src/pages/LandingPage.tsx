@@ -83,7 +83,7 @@ const Index = () => {
         </section>
 
         {/* Features Section */}
-        <section className="py-16 px-6">
+        <section id="features-section" className="py-16 px-6">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-center text-hive mb-12">
               How <span className="text-honey">BuzzDetect</span> Works
@@ -133,7 +133,7 @@ const Index = () => {
         </section>
 
         {/* AI Models Section */}
-        <section className="py-16 px-6 bg-gradient-to-br from-white to-honey-light">
+        <section id="ai-models-section" className="py-16 px-6 bg-gradient-to-br from-white to-honey-light">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-center text-hive mb-6">
               Choose Your <span className="text-honey">AI Model</span>
