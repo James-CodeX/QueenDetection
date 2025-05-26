@@ -69,8 +69,8 @@ const AuthDialog = ({ children }: AuthDialogProps) => {
           if (error.message.includes("user-not-found")) {
             toast.error("No account found with this email. Please sign up.");
             setActiveTab("signup");
-          } else if (error.message.includes("wrong-password")) {
-            toast.error("Incorrect password. Please try again.");
+          } else if (error.message.includes("wrong-password") || error.message.includes("invalid-credential")) {
+            toast.error("Incorrect email or password. Please try again.");
           } else {
             toast.error(error.message);
           }
