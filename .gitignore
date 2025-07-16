@@ -12,6 +12,7 @@ server/env
 .vscode/
 # Virtual environment folders
 server/venv/
+server/.venv/
 
 # Dataset folder (ignore all data inside)
 dataset/
@@ -30,3 +31,5 @@ server/**/.ipynb_checkpoints/
 # OS generated files
 .DS_Store
 Thumbs.db
+config.bat
+node_modules
