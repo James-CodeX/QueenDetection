@@ -12,6 +12,7 @@ server/env
 .vscode/
 # Virtual environment folders
 server/venv/
+server/.venv/
 
 # Dataset folder (ignore all data inside)
 dataset/
